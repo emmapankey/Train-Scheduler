@@ -45,16 +45,17 @@ database.ref().orderByChild("dateAdded").on("child_added", function(snapshot) {
 });
 
 function makeRowInTable(obj) {
-    console.log(obj.firstArrival);
 
     var firstArrivalConverted = moment(obj.firstArrival, "hh:mm").subtract(1, "years");
     console.log("First arrival time: " + firstArrivalConverted);
     
-    var currentTime = moment().format("hh:mm");
-    console.log("Current time: " + currentTime);
-    
+    // var currentTime = moment().format("hh:mm");
+    // console.log("Current time: " + currentTime);
+
+    var currentTime = moment();
+    console.log(currentTime);
+
     var timeDifference = moment().diff(moment(firstArrivalConverted), "minutes");
-    // console.log("Time since the first arrival: " + moment(timeDifference).format("hh:mm"));
     console.log("Difference in Time: " + timeDifference);
     
     var remainder = timeDifference % obj.frequency;
@@ -80,7 +81,7 @@ function makeRowInTable(obj) {
     trainMinutesAway.text(minutesAway);
 
     var trainNextArrival = $("<td class='trainNextArrival'>");
-    trainNextArrival.text(nextTrain);
+    trainNextArrival.text(moment(nextTrain).format("hh:mm"));
 
     tr.append(trainName);
     tr.append(trainDestination);
