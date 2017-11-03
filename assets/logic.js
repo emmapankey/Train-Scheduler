@@ -16,7 +16,7 @@ var destination = "";
 var frequency = "";
 var firstArrival = "";
 
-// Click event for submitting form
+// Click event for submitting form and capturing inputs
 $("#submitButton").on("click", function () {
     name = $("#trainNameInput").val().trim();
     destination = $("#destinationInput").val().trim();
@@ -28,7 +28,6 @@ $("#submitButton").on("click", function () {
         name: name,
         destination: destination,
         firstArrival: firstArrival,
-        // firstArrival: moment(firstArrival).format("hh:mm"),
         frequency: frequency,
         dateAdded: firebase.database.ServerValue.TIMESTAMP
 
@@ -37,23 +36,23 @@ $("#submitButton").on("click", function () {
         if (errObject) {
             alert(errObject)
         }
-    }); // end push
-}); // end click
+    });
+});
 
+// At the initial load and on subsequent data value changes, get a snapshot of the current data. (I.E FIREBASE HERE)
+// This callback keeps the page updated when a value changes in firebase.
 database.ref().orderByChild("dateAdded").on("child_added", function(snapshot) {
     makeRowInTable(snapshot.val());
 });
 
+// Calculate train time data and append train data to rows in the train schedule table
 function makeRowInTable(obj) {
 
     var firstArrivalConverted = moment(obj.firstArrival, "hh:mm").subtract(1, "years");
     console.log("First arrival time: " + firstArrivalConverted);
     
-    // var currentTime = moment().format("hh:mm");
-    // console.log("Current time: " + currentTime);
-
-    var currentTime = moment();
-    console.log(currentTime);
+    var currentTime = moment().format("hh:mm");
+    console.log("Current time: " + currentTime);
 
     var timeDifference = moment().diff(moment(firstArrivalConverted), "minutes");
     console.log("Difference in Time: " + timeDifference);
@@ -81,7 +80,7 @@ function makeRowInTable(obj) {
     trainMinutesAway.text(minutesAway);
 
     var trainNextArrival = $("<td class='trainNextArrival'>");
-    trainNextArrival.text(moment(nextTrain).format("hh:mm"));
+    trainNextArrival.text(moment(nextTrain).format("hh:mm a"));
 
     tr.append(trainName);
     tr.append(trainDestination);
